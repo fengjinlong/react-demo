@@ -1,139 +1,63 @@
-import React from "react"
-// class Square extends React.Component<any, any> {
-//   render() {
-//     return (
-//       <button
-//         className="square"
-//         onClick={() => { this.props.onClick() }}>
-//         {this.props.value}
-//       </button>
-//     )
-//   }
-// }
-function Square(props: any) {
+import React from "react";
+// 导入 React 内置组件
+import {
+  Link,
+  Routes,
+  Route,
+  Navigate,
+  NavLink,
+  useRoutes,
+} from "react-router-dom";
+import Home from "./pages/Home";
+import About from "./pages/About";
+import routes from "./routes";
+
+export default function App() {
   return (
+    // <div>
+    //   {/* 设置路由链接 */}
+    //   {/* className 接收一个函数，可以改变激活的类名 */}
+    //   <Link className="list-group-item" to="/about">
+    //     About
+    //   </Link>
+    //   <p>----</p>
+    //   <Link className="list-group-item" to="/home">
+    //     Home
+    //   </Link>
+    //   <p>****</p>
+    //   {/* 设置路由链接 */}
+    //   <NavLink to="/about">About</NavLink>
+    //   <p>----</p>
+    //   <NavLink to="/home">Home</NavLink>
 
-    <button
-      className="square"
-      onClick={() => { props.onClick() }}>
-      {props.value}
-    </button>
-  )
-}
-class Board extends React.Component<any, any>{
+    //   {/* 注册路由 */}
+    //   {/* 必须用 Routes 组件进行包裹*/}
+    //   {/* Route 组件的 element 属性值为对应的组件*/}
+    //   {/* caseSensitive 严格区分大小写*/}
+    //   <Routes>
+    //     <Route path="/about" caseSensitive element={<About />}></Route>
+    //     <Route path="/home" element={<Home />}></Route>
+    //     {/* Navigate 组件，页面一渲染就显示对应组件，可实现重定向效果 */}
+    //     <Route path="/" element={<Navigate to="/about " />}></Route>
+    //   </Routes>
+    // </div>
 
-  renderSquare(i: number) {
-    return <Square value={this.props.squares[i]} onClick={() => this.props.onClick(i)} />;
-  }
-
-  render() {
-
-    return (<div>
-      {/* <div className="status">{status}</div> */}
-      <div className="board-row">
-        {this.renderSquare(0)}
-        {this.renderSquare(1)}
-        {this.renderSquare(2)}
+    <div>
+      <div className="list-group">
+        {/* 设置路由链接 */}
+        <NavLink className="list-group-item" to="/about">
+          About
+        </NavLink>
+        <p>***</p>
+        <NavLink className="list-group-item" to="/home">
+          Home
+        </NavLink>
       </div>
-      <div className="board-row">
-        {this.renderSquare(3)}
-        {this.renderSquare(4)}
-        {this.renderSquare(5)}
+      <div className="panel-body">
+        {/* 注册路由 */}
+        {/* 调用 useRoutes() hooks，嵌入路由映射表 */}
+        {useRoutes(routes)}
       </div>
-      <div className="board-row">
-        {this.renderSquare(6)}
-        {this.renderSquare(7)}
-        {this.renderSquare(8)}
-      </div>
-    </div>)
-  }
+    </div>
+  );
 }
-class App extends React.Component<any, any>{
-  constructor(props: any) {
-    super(props);
-    this.state = {
-      history: [{
-        squares: Array(9).fill(null),
-      }],
-      stepNumber: 0,
-      xIsNext: true,
-    };
-  }
-  handleClick(i: number) {
-    // const history = this.state.history;
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice()
-    if (calculateWinner(squares) || squares[i]) {
-      return;
-    }
-    squares[i] = this.state.xIsNext ? 'x' : 'o'
-    this.setState({
-      history: history.concat([{
-        squares: squares,
-      }]), xIsNext: !this.state.xIsNext, stepNumber: history.length,
-    })
-  }
-  jumpTo(step: any) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: (step % 2) === 0,
-    });
-  }
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-
-
-    const moves = history.map((step: any, move: string) => {
-      const desc = move ?
-        'Go to move #' + move :
-        'Go to game start';
-      return (
-        <li key={move}>
-          <button onClick={() => this.jumpTo(move)}>{desc}</button>
-        </li>
-      );
-    });
-    let status;
-    if (winner) {
-      status = 'Winner: ' + winner;
-    } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
-    }
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board squares={current.squares}
-            onClick={(i: number) => this.handleClick(i)} />
-        </div>
-        <div className="game-info">
-          <div>{status}</div>
-          <ul>{moves}</ul>
-        </div>
-      </div>
-    )
-  }
-}
-function calculateWinner(squares: any) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
-
-export default App
